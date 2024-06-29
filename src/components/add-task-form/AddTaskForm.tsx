@@ -3,16 +3,23 @@ import { useForm } from 'react-hook-form';
 import './AddTaskForm.scss';
 import { ITask } from '../../libs/types/task';
 import { addTask } from '../../libs/services/task';
+import useRevalidation from '../../hooks/use-revalidation';
 export default function AddTaskForm() {
-  const { register, handleSubmit } = useForm<ITask>({
+  const { register, handleSubmit, reset } = useForm<ITask>({
     defaultValues: {
       title: '',
       description: ''
     }
   });
+  const { revalidate } = useRevalidation();
 
   const onSubmit = (data: ITask) => {
     addTask(data);
+    reset({
+      title: '',
+      description: ''
+    });
+    revalidate('tasks');
   };
 
   return (
