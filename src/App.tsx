@@ -6,7 +6,7 @@ import AddTaskForm from './components/add-task-form/AddTaskForm';
 function App() {
   return (
     <div className="app">
-      <h1>Todo App</h1>
+      <h1 className="app-title">Todo App</h1>
       <div className="app-inner">
         <TaskList />
         <AddTaskForm />

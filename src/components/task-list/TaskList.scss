@@ -1,3 +1,28 @@
 .task-list{
   margin-top: 20px;
+
+  .task-list-title-container{
+    margin-bottom: 15px;
+  }
+
+  .task-list-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline-start: 1rem;
+
+    .task-list-item-title{
+      font-size: 18px;
+    }
+
+    .task-list-item-actions{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .task-list-item-actions-button{
+        margin-left: 10px;
+      }
+    }
+  }
 }

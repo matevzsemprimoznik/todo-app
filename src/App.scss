@@ -1,6 +1,10 @@
 .app {
   padding: 40px;
 
+  .app-title {
+    margin-bottom: 20px;
+  }
+
   .app-inner{
     display: grid;
     grid-template-columns: 2.5fr 1fr;

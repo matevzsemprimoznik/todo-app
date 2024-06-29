@@ -1,5 +1,15 @@
-import { Button, ContainedList, ContainedListItem, IconButton, Tooltip } from '@carbon/react';
-import { Close } from '@carbon/icons-react';
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  ContainedList,
+  ContainedListItem,
+  Heading,
+  IconButton,
+  Section,
+  Tooltip
+} from '@carbon/react';
+import { ChevronDown, Close } from '@carbon/icons-react';
 import './TaskList.scss';
 import useTasks from '../../hooks/use-tasks';
 import { removeTask } from '../../libs/services/task';
@@ -17,29 +27,45 @@ export default function TaskList() {
 
   return (
     <div className="task-list">
-      <ContainedList label="Tasks" kind="on-page">
+      <Section level={4} className="task-list-title-container">
+        <Heading>Tasks</Heading>
+      </Section>
+      <Accordion>
         {tasks.length === 0 ? (
-          <ContainedListItem>No tasks found</ContainedListItem>
+          <p>No tasks found</p>
         ) : (
           <>
             {tasks.map((task) => (
-              <ContainedListItem
+              <AccordionItem
                 key={task.id}
-                action={
-                  <Button
-                    hasIconOnly
-                    iconDescription="Remove"
-                    kind="ghost"
-                    onClick={() => onClickRemoveTask(task.id)}>
-                    <Close />
-                  </Button>
-                }>
-                {task.title}
-              </ContainedListItem>
+                title="Section 1 title"
+                renderExpando={({ onClick }) => (
+                  <div className="task-list-item">
+                    <p>{task.title}</p>
+                    <div className="task-list-item-actions">
+                      <Button
+                        hasIconOnly
+                        iconDescription="Remove"
+                        kind="ghost"
+                        onClick={() => onClickRemoveTask(task.id)}
+                        renderIcon={Close}
+                      />
+                      <Button
+                        hasIconOnly
+                        iconDescription="Expand"
+                        kind="ghost"
+                        onClick={onClick}
+                        renderIcon={ChevronDown}
+                      />
+                    </div>
+                  </div>
+                )}>
+                <p>{task.description}</p>
+              </AccordionItem>
             ))}
           </>
         )}
-      </ContainedList>
+      </Accordion>
     </div>
   );
 }
