@@ -14,6 +14,7 @@ import './TaskList.scss';
 import usePaginatedTasks from '../../hooks/use-paginated-tasks';
 import TaskListItem from '../task-list-item/TaskListItem';
 import useTasksCount from '../../hooks/use-tasks-count';
+import { useState } from 'react';
 
 const DefaultPaginationData = {
   page: 1,
@@ -23,8 +24,10 @@ const DefaultPaginationData = {
 export default function TaskList() {
   const { tasks, fetchPaginatedTasks } = usePaginatedTasks(DefaultPaginationData);
   const { tasksCount } = useTasksCount();
+  const [paginationProps, setPaginationProps] = useState(DefaultPaginationData);
 
   const onChangePaginationProps = (page: number, pageSize: number) => {
+    setPaginationProps({ page, pageSize });
     fetchPaginatedTasks(page, pageSize);
   };
 
@@ -46,8 +49,8 @@ export default function TaskList() {
               forwardText="Next page"
               itemsPerPageText="Items per page:"
               onChange={(data) => onChangePaginationProps(data.page, data.pageSize)}
-              page={DefaultPaginationData.page}
-              pageSize={DefaultPaginationData.pageSize}
+              page={paginationProps.page}
+              pageSize={paginationProps.pageSize}
               pageSizes={[5, 10]}
               totalItems={tasksCount}
               size="md"

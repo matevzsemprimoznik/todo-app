@@ -32,6 +32,7 @@ export default function usePaginatedTasks({
   }, []);
 
   useEffect(() => {
+    console.log('useEffect', page, pageSize);
     updateRevalidationListener(taskKeyFactory.tasks, () => {
       setTasks(getTasks(page, pageSize));
     });
