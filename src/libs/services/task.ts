@@ -17,8 +17,8 @@ export const getPaginatedTasks = (page: number, pageSize: number) => {
 };
 
 export const addTask = (task: ITask) => {
-  let tasks = getTasks();
-  tasks = [task, ...tasks];
+  const tasks = getTasks();
+  tasks.push(task);
   localStorage.setItem('tasks', JSON.stringify(tasks));
 };
 
