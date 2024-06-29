@@ -8,7 +8,7 @@ interface EventStore {
   addRevalidationListener: (key: string, listener: EventListener) => void;
 }
 
-const useRevalidation = create<EventStore>((set) => ({
+const useRevalidate = create<EventStore>((set) => ({
   events: {},
   listeners: {},
 
@@ -26,4 +26,4 @@ const useRevalidation = create<EventStore>((set) => ({
     })
 }));
 
-export default useRevalidation;
+export default useRevalidate;
