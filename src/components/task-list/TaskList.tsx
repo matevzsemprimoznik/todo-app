@@ -41,6 +41,7 @@ export default function TaskList() {
               <TaskListItem task={task} key={task.id} />
             ))}
             <Pagination
+              key={tasksCount}
               backwardText="Previous page"
               forwardText="Next page"
               itemsPerPageText="Items per page:"
