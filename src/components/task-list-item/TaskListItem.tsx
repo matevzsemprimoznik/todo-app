@@ -27,7 +27,7 @@ export default function TaskListItem({ task }: TaskListItemProps) {
     <AccordionItem
       key={task.id}
       title="Section 1 title"
-      renderExpando={({ onClick }) => (
+      renderToggle={({ onClick }) => (
         <div className="task-list-item">
           <p>{task.title}</p>
           <div className="task-list-item-actions">

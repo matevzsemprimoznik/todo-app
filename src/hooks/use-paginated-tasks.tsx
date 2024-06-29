@@ -8,18 +8,31 @@ interface UsePaginatedTasksProps {
   page: number;
   pageSize: number;
 }
-export default function usePaginatedTasks({ page, pageSize }: UsePaginatedTasksProps) {
+export default function usePaginatedTasks({
+  page: pageFromProps,
+  pageSize: pageSizeFromProps
+}: UsePaginatedTasksProps) {
+  const [page, setPage] = useState(pageFromProps);
+  const [pageSize, setPageSize] = useState(pageSizeFromProps);
   const [tasks, setTasks] = useState<ITask[]>([]);
-  const { addRevalidationListener } = useRevalidate();
+  const { addRevalidationListener, updateRevalidationListener } = useRevalidate();
 
   useEffect(() => {
     setTasks(getPaginatedTasks(page, pageSize));
     addRevalidationListener(taskKeyFactory.tasks, () => {
       setTasks(getPaginatedTasks(page, pageSize));
     });
-  }, [addRevalidationListener]);
+  }, []);
+
+  useEffect(() => {
+    updateRevalidationListener(taskKeyFactory.tasks, () => {
+      setTasks(getPaginatedTasks(page, pageSize));
+    });
+  }, [page, pageSize, updateRevalidationListener]);
 
   const fetchPaginatedTasks = (page: number, pageSize: number) => {
+    setPage(page);
+    setPageSize(pageSize);
     setTasks(getPaginatedTasks(page, pageSize));
   };
 

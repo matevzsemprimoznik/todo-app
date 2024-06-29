@@ -6,7 +6,8 @@ export const getTasks = () => {
 };
 
 export const getTasksCount = () => {
-  return getTasks().length;
+  console.log('getTasksCount', getTasks().length);
+  return getTasks().length || 0;
 };
 
 export const getPaginatedTasks = (page: number, pageSize: number) => {

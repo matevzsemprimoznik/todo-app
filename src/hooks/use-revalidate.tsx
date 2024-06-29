@@ -6,6 +6,7 @@ interface EventStore {
   listeners: Record<string, EventListener[]>;
   revalidate: (key: string) => void;
   addRevalidationListener: (key: string, listener: EventListener) => void;
+  updateRevalidationListener: (key: string, listener: EventListener) => void;
 }
 
 const useRevalidate = create<EventStore>((set) => ({
@@ -20,6 +21,12 @@ const useRevalidate = create<EventStore>((set) => ({
     }),
 
   addRevalidationListener: (key, listener) =>
+    set((state) => {
+      const eventListeners = state.listeners[key] || [];
+      return { listeners: { ...state.listeners, [key]: [...eventListeners, listener] } };
+    }),
+
+  updateRevalidationListener: (key, listener) =>
     set((state) => {
       const eventListeners = state.listeners[key] || [];
       return { listeners: { ...state.listeners, [key]: [...eventListeners, listener] } };
