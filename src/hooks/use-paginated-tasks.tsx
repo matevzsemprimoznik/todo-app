@@ -17,23 +17,30 @@ export default function usePaginatedTasks({
   const [tasks, setTasks] = useState<ITask[]>([]);
   const { addRevalidationListener, updateRevalidationListener } = useRevalidate();
 
+  const getTasks = (page: number, pageSize: number) => {
+    const tasks = getPaginatedTasks(page, pageSize);
+    if (tasks.length !== 0 || page <= 1) return tasks;
+    setPage(page - 1);
+    return getPaginatedTasks(page - 1, pageSize);
+  };
+
   useEffect(() => {
     setTasks(getPaginatedTasks(page, pageSize));
     addRevalidationListener(taskKeyFactory.tasks, () => {
-      setTasks(getPaginatedTasks(page, pageSize));
+      setTasks(getTasks(page, pageSize));
     });
   }, []);
 
   useEffect(() => {
     updateRevalidationListener(taskKeyFactory.tasks, () => {
-      setTasks(getPaginatedTasks(page, pageSize));
+      setTasks(getTasks(page, pageSize));
     });
   }, [page, pageSize, updateRevalidationListener]);
 
   const fetchPaginatedTasks = (page: number, pageSize: number) => {
     setPage(page);
     setPageSize(pageSize);
-    setTasks(getPaginatedTasks(page, pageSize));
+    setTasks(getTasks(page, pageSize));
   };
 
   return { tasks, setTasks, fetchPaginatedTasks };

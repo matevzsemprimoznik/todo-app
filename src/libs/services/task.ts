@@ -6,7 +6,6 @@ export const getTasks = () => {
 };
 
 export const getTasksCount = () => {
-  console.log('getTasksCount', getTasks().length);
   return getTasks().length || 0;
 };
 
