@@ -1,0 +1,17 @@
+.task-list-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline-start: 1rem;
+
+
+  .task-list-item-actions{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .task-list-item-actions-button{
+      margin-left: 0.5rem;
+    }
+  }
+}

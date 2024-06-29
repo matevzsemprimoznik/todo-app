@@ -11,7 +11,8 @@ export default function AddTaskForm() {
   const { register, handleSubmit, reset } = useForm<ITask>({
     defaultValues: {
       title: '',
-      description: ''
+      description: '',
+      completed: false
     }
   });
   const { revalidate } = useRevalidate();

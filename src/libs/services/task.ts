@@ -16,3 +16,12 @@ export const removeTask = (id: string) => {
   const updatedTasks = tasks.filter((task: ITask) => task.id !== id);
   localStorage.setItem('tasks', JSON.stringify(updatedTasks));
 };
+
+export const changeTaskCompleteStatus = (id: string, completed: boolean) => {
+  const tasks = getTasks();
+  const task = tasks.find((t: ITask) => t.id === id);
+  if (task) {
+    task.completed = completed;
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+};

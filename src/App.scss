@@ -1,18 +1,18 @@
 .app {
-  padding: 40px;
+  padding: 3rem;
 
   .app-title {
-    margin-bottom: 20px;
+    margin-bottom: 1.2rem;
   }
 
   .app-inner{
     display: grid;
     grid-template-columns: 2.5fr 1fr;
-    gap: 50px;
+    gap: 3rem;
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
-      gap: 30px;
+      gap: 2.5rem;
     }
   }
 }
