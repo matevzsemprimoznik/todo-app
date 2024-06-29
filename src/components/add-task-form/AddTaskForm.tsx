@@ -6,9 +6,27 @@ import { addTask } from '../../libs/services/task';
 import useRevalidate from '../../hooks/use-revalidate';
 import { uuid } from '../../utils/uuid';
 import { taskKeyFactory } from '../../hooks/key-factories';
+import { z, ZodType } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const AddTaskSchema = z.object({
+  title: z
+    .string({ message: 'Title is required' })
+    .min(3, { message: 'Title must be at least 3 characters' })
+    .max(30, { message: 'Title must be at most 30 characters' }),
+  description: z.string({ message: 'Description is required' })
+});
 
 export default function AddTaskForm() {
-  const { register, handleSubmit, reset } = useForm<ITask>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    clearErrors,
+
+    formState: { errors }
+  } = useForm<ITask>({
+    resolver: zodResolver(AddTaskSchema),
     defaultValues: {
       title: '',
       description: '',
@@ -27,6 +45,7 @@ export default function AddTaskForm() {
       title: '',
       description: ''
     });
+    clearErrors('root');
     revalidate(taskKeyFactory.tasks);
   };
 
@@ -36,8 +55,18 @@ export default function AddTaskForm() {
         <Heading>Add New Task</Heading>
       </Section>
       <Stack gap={7}>
-        <TextInput id="title" labelText="Task title" {...register('title')} />
-        <TextArea id="description" labelText="Task description" {...register('description')} />
+        <TextInput
+          helperText={errors.title?.message}
+          id="title"
+          labelText="Task title"
+          {...register('title', { required: true })}
+        />
+        <TextArea
+          helperText={errors.description?.message}
+          id="description"
+          labelText="Task description"
+          {...register('description', { required: true })}
+        />
         <Button type="submit">Add Task</Button>
       </Stack>
     </Form>
