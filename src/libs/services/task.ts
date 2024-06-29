@@ -5,9 +5,20 @@ export const getTasks = () => {
   return (tasks ? JSON.parse(tasks) : []) as ITask[];
 };
 
-export const addTask = (task: ITask) => {
+export const getTasksCount = () => {
+  return getTasks().length;
+};
+
+export const getPaginatedTasks = (page: number, pageSize: number) => {
   const tasks = getTasks();
-  tasks.push(task);
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  return tasks.slice(start, end);
+};
+
+export const addTask = (task: ITask) => {
+  let tasks = getTasks();
+  tasks = [task, ...tasks];
   localStorage.setItem('tasks', JSON.stringify(tasks));
 };
 

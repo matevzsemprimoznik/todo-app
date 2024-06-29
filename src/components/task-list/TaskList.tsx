@@ -6,19 +6,31 @@ import {
   ContainedListItem,
   Heading,
   IconButton,
+  Pagination,
   Section,
   Tooltip
 } from '@carbon/react';
 import { CheckmarkFilled, ChevronDown, CircleOutline, Close } from '@carbon/icons-react';
 import './TaskList.scss';
-import useTasks from '../../hooks/use-tasks';
+import usePaginatedTasks from '../../hooks/use-paginated-tasks';
 import { changeTaskCompleteStatus, removeTask } from '../../libs/services/task';
 import useRevalidation from '../../hooks/use-revalidate';
 import { taskKeyFactory } from '../../hooks/key-factories';
 import TaskListItem from '../task-list-item/TaskListItem';
+import useTasksCount from '../../hooks/use-tasks-count';
+
+const DefaultPaginationData = {
+  page: 1,
+  pageSize: 5
+};
 
 export default function TaskList() {
-  const { tasks } = useTasks();
+  const { tasks, fetchPaginatedTasks } = usePaginatedTasks(DefaultPaginationData);
+  const { tasksCount } = useTasksCount();
+
+  const onChangePaginationProps = (page: number, pageSize: number) => {
+    fetchPaginatedTasks(page, pageSize);
+  };
 
   return (
     <div className="task-list">
@@ -36,6 +48,17 @@ export default function TaskList() {
           </>
         )}
       </Accordion>
+      <Pagination
+        backwardText="Previous page"
+        forwardText="Next page"
+        itemsPerPageText="Items per page:"
+        onChange={(data) => onChangePaginationProps(data.page, data.pageSize)}
+        page={DefaultPaginationData.page}
+        pageSize={DefaultPaginationData.pageSize}
+        pageSizes={[5, 10]}
+        totalItems={tasksCount}
+        size="md"
+      />
     </div>
   );
 }
