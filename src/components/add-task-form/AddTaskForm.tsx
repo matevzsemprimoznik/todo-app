@@ -1,19 +1,10 @@
 import { Button, Form, TextInput, Stack, Heading, Section } from '@carbon/react';
 import { useForm } from 'react-hook-form';
 import './AddTaskForm.scss';
-
-interface ITask {
-  title: string;
-  description: string;
-}
-
+import { ITask } from '../../libs/types/task';
+import { addTask } from '../../libs/services/task';
 export default function AddTaskForm() {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, isSubmitting }
-  } = useForm<ITask>({
+  const { register, handleSubmit } = useForm<ITask>({
     defaultValues: {
       title: '',
       description: ''
@@ -21,7 +12,7 @@ export default function AddTaskForm() {
   });
 
   const onSubmit = (data: ITask) => {
-    console.log(data);
+    addTask(data);
   };
 
   return (
