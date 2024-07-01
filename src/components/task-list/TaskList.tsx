@@ -3,13 +3,14 @@ import './TaskList.scss';
 import usePaginatedTasks from '../../hooks/use-paginated-tasks';
 import TaskListItem from '../task-list-item/TaskListItem';
 import useTasksCount from '../../hooks/use-tasks-count';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export default function TaskList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const { data: tasks, hasNextPage, fetchNextPage } = usePaginatedTasks({ pageSize });
   const { data: tasksCount } = useTasksCount();
+  const selectedTasks = useMemo(() => tasks?.pages[currentPage - 1]?.data, [tasks, currentPage]);
 
   const onChangePaginationProps = async (page: number, pageSize: number) => {
     if (page > currentPage) {
@@ -32,10 +33,10 @@ export default function TaskList() {
         <Heading>Tasks</Heading>
       </Section>
       <Accordion>
-        {tasks?.pages.length === 0 && <p>No tasks found</p>}
-        {tasks?.pages.length && tasks?.pages.length > 0 && (
+        {selectedTasks?.length === 0 && <p>No tasks found</p>}
+        {selectedTasks && selectedTasks?.length > 0 && (
           <div>
-            {tasks.pages[currentPage - 1].data.map((task) => (
+            {tasks?.pages[currentPage - 1].data.map((task) => (
               <TaskListItem task={task} key={task.id} onDeleteTask={onDeleteTask} />
             ))}
             <Pagination
