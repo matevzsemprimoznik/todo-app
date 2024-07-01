@@ -60,8 +60,7 @@ export default function TaskListItem({ task, onDeleteTask }: TaskListItemProps) 
             />
           </div>
         </div>
-      )}
-    >
+      )}>
       <p>{task.description}</p>
     </AccordionItem>
   );
