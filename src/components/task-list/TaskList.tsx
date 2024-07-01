@@ -14,7 +14,7 @@ import './TaskList.scss';
 import usePaginatedTasks from '../../hooks/use-paginated-tasks';
 import TaskListItem from '../task-list-item/TaskListItem';
 import useTasksCount from '../../hooks/use-tasks-count';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const DefaultPaginationData = {
   page: 1,
@@ -22,13 +22,24 @@ const DefaultPaginationData = {
 };
 
 export default function TaskList() {
-  const { tasks, fetchPaginatedTasks } = usePaginatedTasks(DefaultPaginationData);
-  const { tasksCount } = useTasksCount();
-  const [paginationProps, setPaginationProps] = useState(DefaultPaginationData);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const { data: tasks, hasNextPage, fetchNextPage } = usePaginatedTasks({ pageSize });
+  const { data: tasksCount } = useTasksCount();
 
-  const onChangePaginationProps = (page: number, pageSize: number) => {
-    setPaginationProps({ page, pageSize });
-    fetchPaginatedTasks(page, pageSize);
+  const onChangePaginationProps = async (page: number, pageSize: number) => {
+    if (page > currentPage) {
+      await fetchNextPage();
+    }
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  };
+
+  const onDeleteTask = (id: string) => {
+    const currentTasks = tasks?.pages[currentPage - 1]?.data;
+    if (currentTasks && (currentTasks.length - 1) % pageSize === 0 && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   return (
@@ -37,11 +48,11 @@ export default function TaskList() {
         <Heading>Tasks</Heading>
       </Section>
       <Accordion>
-        {tasks.length === 0 && <p>No tasks found</p>}
-        {tasks.length > 0 && (
+        {tasks?.pages.length === 0 && <p>No tasks found</p>}
+        {tasks?.pages.length && tasks?.pages.length > 0 && (
           <div>
-            {tasks.map((task) => (
-              <TaskListItem task={task} key={task.id} />
+            {tasks.pages[currentPage - 1].data.map((task) => (
+              <TaskListItem task={task} key={task.id} onDeleteTask={onDeleteTask} />
             ))}
             <Pagination
               key={tasksCount}
@@ -49,8 +60,8 @@ export default function TaskList() {
               forwardText="Next page"
               itemsPerPageText="Items per page:"
               onChange={(data) => onChangePaginationProps(data.page, data.pageSize)}
-              page={paginationProps.page}
-              pageSize={paginationProps.pageSize}
+              page={currentPage}
+              pageSize={pageSize}
               pageSizes={[5, 10]}
               totalItems={tasksCount}
               size="md"

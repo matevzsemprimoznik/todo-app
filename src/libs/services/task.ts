@@ -9,12 +9,14 @@ export const getTasksCount = () => {
   return getTasks().length || 0;
 };
 
-export const getPaginatedTasks = (page: number, pageSize: number) => {
+export function getPaginatedTasks(pageParam: number, pageSize: number) {
   const tasks = getTasks();
-  const start = (page - 1) * pageSize;
-  const end = start + pageSize;
-  return tasks.slice(start, end);
-};
+  return {
+    data: tasks.slice(pageParam, pageParam + pageSize),
+    currentPage: pageParam,
+    nextPage: pageParam + pageSize < tasks.length ? pageParam + pageSize : null
+  };
+}
 
 export const addTask = (task: ITask) => {
   const tasks = getTasks();

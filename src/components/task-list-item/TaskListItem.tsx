@@ -1,26 +1,32 @@
 import { ITask } from '../../libs/types/task';
 import { AccordionItem, Button } from '@carbon/react';
 import { CheckmarkFilled, ChevronDown, CircleOutline, Close } from '@carbon/icons-react';
-import useRevalidation from '../../hooks/use-revalidate';
 import { changeTaskCompleteStatus, removeTask } from '../../libs/services/task';
 import { taskKeyFactory } from '../../hooks/key-factories';
 import './TaskListItem.scss';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface TaskListItemProps {
   task: ITask;
+  onDeleteTask: (id: string) => void;
 }
 
-export default function TaskListItem({ task }: TaskListItemProps) {
-  const { revalidate } = useRevalidation();
+export default function TaskListItem({ task, onDeleteTask }: TaskListItemProps) {
+  const queryClient = useQueryClient();
 
-  const onClickRemoveTask = (id: string) => {
+  const onClickRemoveTask = async (id: string) => {
     removeTask(id);
-    revalidate(taskKeyFactory.tasks);
+    onDeleteTask(id);
+    await queryClient.invalidateQueries({
+      queryKey: taskKeyFactory.tasks
+    });
   };
 
   const onClickTaskCompleted = (id: string, completed: boolean) => {
     changeTaskCompleteStatus(id, !completed);
-    revalidate(taskKeyFactory.tasks);
+    queryClient.invalidateQueries({
+      queryKey: taskKeyFactory.tasks
+    });
   };
 
   return (

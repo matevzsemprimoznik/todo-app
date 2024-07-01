@@ -1,3 +1,4 @@
 export const taskKeyFactory = {
-  tasks: 'tasks'
+  tasks: ['tasks'],
+  count: () => [...taskKeyFactory.tasks, 'count']
 };

@@ -1,47 +1,29 @@
 import { useEffect, useState } from 'react';
 import { getPaginatedTasks, getTasks } from '../libs/services/task';
-import { ITask } from '../libs/types/task';
-import useRevalidate from './use-revalidate';
 import { taskKeyFactory } from './key-factories';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 interface UsePaginatedTasksProps {
-  page: number;
   pageSize: number;
 }
-export default function usePaginatedTasks({
-  page: pageFromProps,
-  pageSize: pageSizeFromProps
-}: UsePaginatedTasksProps) {
-  const [page, setPage] = useState(pageFromProps);
-  const [pageSize, setPageSize] = useState(pageSizeFromProps);
-  const [tasks, setTasks] = useState<ITask[]>([]);
-  const { addRevalidationListener, updateRevalidationListener } = useRevalidate();
-
-  const getTasks = (page: number, pageSize: number) => {
-    const tasks = getPaginatedTasks(page, pageSize);
-    if (tasks.length !== 0 || page <= 1) return tasks;
-    setPage(page - 1);
-    return getPaginatedTasks(page - 1, pageSize);
-  };
+export default function usePaginatedTasks({ pageSize = 5 }: UsePaginatedTasksProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const infinityQueryProps = useInfiniteQuery({
+    queryKey: [...taskKeyFactory.tasks, { pageSize }],
+    queryFn: ({ pageParam }) => getPaginatedTasks(pageParam, pageSize),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextPage
+  });
 
   useEffect(() => {
-    setTasks(getPaginatedTasks(page, pageSize));
-    addRevalidationListener(taskKeyFactory.tasks, () => {
-      setTasks(getTasks(page, pageSize));
-    });
-  }, []);
+    if ((infinityQueryProps.data?.pages.length || 10000) < currentPage) {
+      setCurrentPage(currentPage - 1);
+    }
+  }, [infinityQueryProps.data?.pageParams]);
 
-  useEffect(() => {
-    updateRevalidationListener(taskKeyFactory.tasks, () => {
-      setTasks(getTasks(page, pageSize));
-    });
-  }, [page, pageSize, updateRevalidationListener]);
-
-  const fetchPaginatedTasks = (page: number, pageSize: number) => {
-    setPage(page);
-    setPageSize(pageSize);
-    setTasks(getTasks(page, pageSize));
+  return {
+    ...infinityQueryProps,
+    currentPage,
+    setCurrentPage
   };
-
-  return { tasks, setTasks, fetchPaginatedTasks };
 }

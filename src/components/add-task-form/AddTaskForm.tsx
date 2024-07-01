@@ -3,11 +3,11 @@ import { useForm } from 'react-hook-form';
 import './AddTaskForm.scss';
 import { ITask } from '../../libs/types/task';
 import { addTask } from '../../libs/services/task';
-import useRevalidate from '../../hooks/use-revalidate';
 import { uuid } from '../../utils/uuid';
 import { taskKeyFactory } from '../../hooks/key-factories';
 import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 
 const AddTaskSchema = z.object({
   title: z
@@ -33,7 +33,7 @@ export default function AddTaskForm() {
       completed: false
     }
   });
-  const { revalidate } = useRevalidate();
+  const queryClient = useQueryClient();
 
   const onSubmit = (data: ITask) => {
     const task = {
@@ -46,7 +46,9 @@ export default function AddTaskForm() {
       description: ''
     });
     clearErrors('root');
-    revalidate(taskKeyFactory.tasks);
+    queryClient.invalidateQueries({
+      queryKey: taskKeyFactory.tasks
+    });
   };
 
   return (
