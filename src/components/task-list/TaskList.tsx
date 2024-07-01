@@ -1,25 +1,9 @@
-import {
-  Accordion,
-  AccordionItem,
-  Button,
-  ContainedList,
-  ContainedListItem,
-  Heading,
-  IconButton,
-  Pagination,
-  Section,
-  Tooltip
-} from '@carbon/react';
+import { Accordion, Heading, Pagination, Section } from '@carbon/react';
 import './TaskList.scss';
 import usePaginatedTasks from '../../hooks/use-paginated-tasks';
 import TaskListItem from '../task-list-item/TaskListItem';
 import useTasksCount from '../../hooks/use-tasks-count';
-import { useEffect, useMemo, useState } from 'react';
-
-const DefaultPaginationData = {
-  page: 1,
-  pageSize: 5
-};
+import { useState } from 'react';
 
 export default function TaskList() {
   const [currentPage, setCurrentPage] = useState(1);

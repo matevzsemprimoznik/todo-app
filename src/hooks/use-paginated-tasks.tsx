@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getPaginatedTasks, getTasks } from '../libs/services/task';
+import { getPaginatedTasks } from '../libs/services/task';
 import { taskKeyFactory } from './key-factories';
 import { useInfiniteQuery } from '@tanstack/react-query';
 

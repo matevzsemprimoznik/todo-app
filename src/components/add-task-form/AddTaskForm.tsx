@@ -5,7 +5,7 @@ import { ITask } from '../../libs/types/task';
 import { addTask } from '../../libs/services/task';
 import { uuid } from '../../utils/uuid';
 import { taskKeyFactory } from '../../hooks/key-factories';
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 
